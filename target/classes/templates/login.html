@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>登录</title>
+    <link href="./jqueryIp/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html{
+            height: 100vh;
+            background: url("./images/downloaded-image.png") no-repeat;
+            background-size: cover;
+        }
+        body{
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">用户登录</h4>
+                    <h4 class="text-center">账号：admin22121</h4>
+                    <h4 class="text-center">密码：admin123</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/login}" method="post">
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            用户名或密码错误！
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            您已成功退出登录！
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">密码</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                            <label class="form-check-label" for="remember-me">记住我</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">登录</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="/jqueryIp/js/jquery.js"></script>
+<script type="text/javascript">
+    // function handleAddress(address){
+    //     console.log(address);
+    //     var privacy = false;
+    //     if(address && address.includes("广西") && address.includes("南宁")){
+    //         privacy = true
+    //     }
+    //     console.log(privacy)
+    //     if(localStorage.getItem("lawsKey")){
+    //         window.location.href="./error.html"
+    //     }
+    //     if(!privacy){
+    //         localStorage.setItem("lawsKey","InitCher");
+    //         window.location.href="./error.html"
+    //         // localStorage.removeItem("lawsKey")
+    //     }
+    //     console.log(555)
+    //     document.getElementsByClassName("form-control")[0].disabled=false
+    //     document.getElementsByClassName("form-control")[1].disabled=false
+    //     // $('#city').html(address)
+    // }
+    // $(function(){
+    //     //获取城市ajax
+    //     $.ajax({
+    //         url: 'https://api.map.baidu.com/location/ip?ak=BMXS3lDH7kKVzDdH55nP5OzgOM1NECCl&coor=bd09ll',
+    //         type: 'POST',
+    //         dataType: 'jsonp',
+    //         success:function(data) {
+    //             var address = JSON.stringify(data.content.address_detail.province + "," + data.content.address_detail.city)
+    //             // handleAddress(address)
+    //         }
+    //     });
+    //     //获取ip ajax
+    //     $.ajax({
+    //         url: 'https://ip-api.com/json',
+    //         success: function(data){
+    //             console.log(JSON.stringify(data.query));
+    //             $.ajax({
+    //                 url: `https://api.map.baidu.com/location/ip?ip=${data.query}&ak=BMXS3lDH7kKVzDdH55nP5OzgOM1NECCl&coor=bd09ll`,
+    //                 type: 'POST',
+    //                 dataType: 'jsonp',
+    //                 success:function(data) {
+    //                     var address = JSON.stringify(data.content.address_detail.province + "," + data.content.address_detail.city)
+    //                     // handleAddress(address)
+    //                 }
+    //             });
+    //             // $('#ip').html(JSON.stringify(data.query))
+    //         },
+    //         type: 'GET',
+    //         dataType: 'JSON'
+    //     });
+    // })
+
+</script>

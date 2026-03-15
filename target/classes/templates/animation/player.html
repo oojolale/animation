@@ -1,0 +1,1477 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>播放中 - 海贼王第1100集 - 哈哈动漫网</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+            color: #fff;
+            min-width: 320px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 头部区域 - 与/animation/index.html一致 */
+        .header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo span {
+            color: #fff;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 450px;
+            display: flex;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .search-box button {
+            padding: 10px 25px;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .search-box button:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 导航 */
+        .nav {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-list {
+            display: flex;
+            padding: 0 15px;
+        }
+        
+        .nav-list li {
+            flex-shrink: 0;
+        }
+        
+        .nav-list a {
+            display: block;
+            padding: 14px 20px;
+            color: #ccc;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .nav-list a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        
+        .nav-list a:hover::after,
+        .nav-list a.active::after {
+            width: 80%;
+        }
+        
+        .nav-list a:hover {
+            color: #ffd700;
+        }
+        
+        .nav-list a.active {
+            color: #ffd700;
+        }
+        
+        /* 播放页面样式 */
+        .player-container {
+            padding: 20px 0 50px;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+        
+        .player-main {
+            display: flex;
+            gap: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .player-main {
+                flex-direction: column;
+            }
+        }
+        
+        .player-left {
+            flex: 1;
+        }
+        
+        .player-right {
+            width: 350px;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 992px) {
+            .player-right {
+                width: 100%;
+            }
+        }
+        
+        /* 视频播放器 */
+        .video-container {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a3e, #0f0f23);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .play-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .video-controls {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-center {
+            flex: 1;
+            padding: 0 20px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .progress-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .progress-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+        
+        .control-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .volume-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 70%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .quality-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* 当前播放信息 */
+        .current-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .current-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .current-episode {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+        
+        .current-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .current-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .current-btn.prev {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .current-btn.next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        
+        .current-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* 选集列表 */
+        .episode-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .episode-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .episode-list-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .episode-search {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            width: 150px;
+            font-size: 12px;
+        }
+        
+        .episode-search::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .episode-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .episode-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .episode-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .episode-item.current {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-left: 3px solid #667eea;
+        }
+        
+        .episode-number {
+            font-weight: 500;
+        }
+        
+        .episode-duration {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 动漫信息侧边栏 */
+        .anime-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .anime-sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .anime-sidebar-cover {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .anime-sidebar-info {
+            margin-bottom: 15px;
+        }
+        
+        .anime-sidebar-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .info-value {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .sidebar-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 评论区域 */
+        .comments-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comments-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .comment-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .comment-input textarea {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .comment-input textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .comment-submit {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-start;
+        }
+        
+        .comment-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .comment-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .comment-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .comment-user {
+            font-weight: 500;
+            color: #ffd700;
+        }
+        
+        .comment-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .comment-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .video-player {
+                height: 300px;
+            }
+            
+            .video-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .control-left, .control-center, .control-right {
+                width: 100%;
+            }
+            
+            .episode-list-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .episode-search {
+                width: 100%;
+            }
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <a href="/animation/index.html" class="logo">🎬 哈哈<span>动漫</span></a>
+                <div class="search-box">
+                    <input type="text" placeholder="搜索动漫、电影、电视剧...">
+                    <button>🔍 搜索</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 导航 -->
+    <nav class="nav">
+        <ul class="nav-list container">
+            <li><a href="/animation/index.html">首页</a></li>
+            <li><a href="/animation/japanese.html">日本动漫</a></li>
+            <li><a href="/animation/chinese.html">国产动漫</a></li>
+            <li><a href="/animation/western.html">欧美动漫</a></li>
+            <li><a href="/animation/movies.html">电影</a></li>
+            <li><a href="tv.html">电视剧</a></li>
+            <li><a href="variety.html">综艺</a></li>
+            <li><a href="documentary.html">纪录片</a></li>
+            <li><a href="/anime/news">资讯</a></li>
+            <li><a href="/anime/rankings">排行榜</a></li>
+        </ul>
+    </nav>
+    
+    <!-- 播放页面内容 -->
+    <div class="container player-container">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <a href="/animation/index.html">首页</a>
+            <span>&gt;</span>
+            <a href="/animation/japanese.html">日本动漫</a>
+            <span>&gt;</span>
+            <a href="/animation/detail.html">海贼王</a>
+            <span>&gt;</span>
+            <span>第1100集 播放中</span>
+        </div>
+        
+        <div class="player-main">
+            <!-- 左侧：视频播放器和选集 -->
+            <div class="player-left">
+                <!-- 视频播放器 -->
+                <div class="video-container">
+                    <div class="video-player">
+                        <div class="video-placeholder">
+                            <div class="play-icon">▶️</div>
+                            <div style="font-size: 18px; margin-bottom: 10px;">海贼王 第1100集</div>
+                            <div style="font-size: 14px; color: rgba(255, 255, 255, 0.5);">点击播放按钮开始播放</div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-controls">
+                        <div class="control-left">
+                            <button class="control-btn" onclick="togglePlay()">⏯️</button>
+                            <button class="control-btn" onclick="skipBackward()">⏪</button>
+                            <button class="control-btn" onclick="skipForward()">⏩</button>
+                        </div>
+                        
+                        <div class="control-center">
+                            <div class="progress-bar" onclick="seekVideo(event)">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-time">
+                                <span id="currentTime">00:00</span>
+                                <span id="totalTime">24:30</span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-right">
+                            <div class="volume-control">
+                                <button class="control-btn" onclick="toggleMute()">🔊</button>
+                                <div class="volume-slider" onclick="changeVolume(event)">
+                                    <div class="volume-fill" id="volumeFill"></div>
+                                </div>
+                            </div>
+                            <select class="quality-select" id="qualitySelect">
+                                <option value="1080p">1080P 高清</option>
+                                <option value="720p">720P 高清</option>
+                                <option value="480p">480P 标清</option>
+                                <option value="360p">360P 流畅</option>
+                            </select>
+                            <button class="control-btn" onclick="toggleFullscreen()">⛶</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 当前播放信息 -->
+                <div class="current-info">
+                    <div class="current-title">海贼王 One Piece</div>
+                    <div class="current-episode">第1100集 · 最终决战！路飞VS凯多 · 24分30秒</div>
+                    <div class="current-actions">
+                        <button class="current-btn prev" onclick="playPrevEpisode()">◀ 上一集</button>
+                        <button class="current-btn next" onclick="playNextEpisode()">下一集 ▶</button>
+                    </div>
+                </div>
+                
+                <!-- 选集列表 -->
+                <div class="episode-list">
+                    <div class="episode-list-header">
+                        <div class="episode-list-title">剧集列表</div>
+                        <input type="text" class="episode-search" placeholder="搜索剧集..." oninput="searchEpisodes(this.value)">
+                    </div>
+                    
+                    <div class="episode-scroll" id="episodeScroll">
+                        <!-- 剧集列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧：动漫信息和相关推荐 -->
+            <div class="player-right">
+                <!-- 动漫信息侧边栏 -->
+                <div class="anime-sidebar">
+                    <div class="anime-sidebar-title">
+                        <span>📺 动漫信息</span>
+                    </div>
+                    <div class="anime-sidebar-cover"></div>
+                    <div class="anime-sidebar-info">
+                        <div class="anime-sidebar-info-item">
+                            <span class="info-label">名称：</span>
+                            <span class="info-value">海贼王</span>
+                        </div>
+                        <div class="anime-sidebar-info-item">
+                            <span class="info-label">类型：</span>
+                            <span class="info-value">热血 / 冒险 / 战斗</span>
+                        </div>
+                        <div class="anime-sidebar-info-item">
+                            <span class="info-label">状态：</span>
+                            <span class="info-value">更新中</span>
+                        </div>
+                        <div class="anime-sidebar-info-item">
+                            <span class="info-label">评分：</span>
+                            <span class="info-value">⭐ 9.8</span>
+                        </div>
+                        <div class="anime-sidebar-info-item">
+                            <span class="info-label">总集数：</span>
+                            <span class="info-value">1100+</span>
+                        </div>
+                    </div>
+                    <button class="sidebar-btn" onclick="window.location.href='/anime/detail?id='+(new URLSearchParams(window.location.search).get('id')||'')" >查看详情</button>
+                </div>
+                
+                <!-- 相关推荐 -->
+                <div class="anime-sidebar">
+                    <div class="anime-sidebar-title">
+                        <span>🎬 相关推荐</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="recommend-sidebar-item" onclick="playAnime('火影忍者', 720)">
+                            <div style="display: flex; gap: 10px;">
+                                <div style="width: 60px; height: 40px; background: linear-gradient(135deg, #ff6b6b, #ffa726); border-radius: 4px; flex-shrink: 0;"></div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">火影忍者</div>
+                                    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">第720集</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recommend-sidebar-item" onclick="playAnime('鬼灭之刃', 55)">
+                            <div style="display: flex; gap: 10px;">
+                                <div style="width: 60px; height: 40px; background: linear-gradient(135deg, #9c27b0, #673ab7); border-radius: 4px; flex-shrink: 0;"></div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">鬼灭之刃</div>
+                                    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">第55集</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recommend-sidebar-item" onclick="playAnime('咒术回战', 47)">
+                            <div style="display: flex; gap: 10px;">
+                                <div style="width: 60px; height: 40px; background: linear-gradient(135deg, #4caf50, #2196f3); border-radius: 4px; flex-shrink: 0;"></div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">咒术回战</div>
+                                    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">第47集</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recommend-sidebar-item" onclick="playAnime('死神', 366)">
+                            <div style="display: flex; gap: 10px;">
+                                <div style="width: 60px; height: 40px; background: linear-gradient(135deg, #607d8b, #795548); border-radius: 4px; flex-shrink: 0;"></div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">死神</div>
+                                    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">第366集</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 评论区域 -->
+        <div class="comments-section">
+            <div class="comments-header">💬 评论 (1289条)</div>
+            
+            <div class="comment-input">
+                <textarea placeholder="留下你的评论... (支持Markdown格式)"></textarea>
+                <button class="comment-submit" onclick="submitComment()">发表评论</button>
+            </div>
+            
+            <div class="comment-list">
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar"></div>
+                        <div>
+                            <div class="comment-user">路飞的草帽</div>
+                            <div class="comment-time">2小时前</div>
+                        </div>
+                    </div>
+                    <div class="comment-content">这一集太燃了！路飞五档的形态太帅了，凯多终于要被打败了吗？期待下一集！</div>
+                </div>
+                
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar"></div>
+                        <div>
+                            <div class="comment-user">索隆的刀</div>
+                            <div class="comment-time">5小时前</div>
+                        </div>
+                    </div>
+                    <div class="comment-content">战斗场面制作精良，特效满分！等了这么多年终于看到路飞VS凯多的最终决战了。</div>
+                </div>
+                
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar"></div>
+                        <div>
+                            <div class="comment-user">山治的料理</div>
+                            <div class="comment-time">1天前</div>
+                        </div>
+                    </div>
+                    <div class="comment-content">这一集的作画质量真的太高了，东映动画这次下了血本啊！希望保持这个水准。</div>
+                </div>
+                
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar"></div>
+                        <div>
+                            <div class="comment-user">娜美的橘子</div>
+                            <div class="comment-time">2天前</div>
+                        </div>
+                    </div>
+                    <div class="comment-content">泪目了，从小学开始追海贼王，现在已经工作了，路飞终于要成为海贼王了！</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 播放器状态
+        let isPlaying = false;
+        let currentTime = 0;
+        let totalTime = 1470; // 24分30秒 = 1470秒
+        let volume = 0.7;
+        let isMuted = false;
+        let currentEpisode = 1100;
+        
+        // 剧集数据
+        const episodes = [];
+        for (let i = 1; i <= 30; i++) {
+            episodes.push({
+                number: 1100 - i + 1,
+                title: getEpisodeTitle(1100 - i + 1),
+                duration: Math.floor(Math.random() * 5) + 20, // 20-25分钟
+                current: (1100 - i + 1) === currentEpisode
+            });
+        }
+        
+        // 获取剧集标题
+        function getEpisodeTitle(episodeNumber) {
+            const titles = [
+                '最终决战！路飞VS凯多',
+                '红发登场！新时代的开幕',
+                '草帽团的集结',
+                '萨博的决意',
+                '黑胡子的野心',
+                '革命军的行动',
+                '五老星的秘密',
+                '伊姆大人的真面目',
+                '古代兵器的真相',
+                '空白的100年',
+                'D之一族的宿命',
+                '最终之岛拉夫德鲁',
+                '四皇的最终对决',
+                '世界政府的阴谋',
+                '天龙人的秘密',
+                '乔伊波伊的预言',
+                '太阳神尼卡',
+                '橡胶果实的觉醒',
+                '路飞的五档',
+                '鬼岛决战开幕'
+            ];
+            return titles[(episodeNumber - 1081) % titles.length] || `第${episodeNumber}集`;
+        }
+        
+        // 初始化页面
+        function initPage() {
+            // 生成剧集列表
+            generateEpisodeList();
+            
+            // 更新播放器时间显示
+            updateTimeDisplay();
+            
+            // 更新音量显示
+            updateVolumeDisplay();
+            
+            // 设置当前剧集为高亮
+            highlightCurrentEpisode();
+            
+            // 从URL参数获取动漫ID和剧集信息
+            const urlParams = new URLSearchParams(window.location.search);
+            const animeId = urlParams.get('id');
+            const episodeParam = urlParams.get('ep') || urlParams.get('episode');
+            const videoUrl = urlParams.get('url');
+
+            if (episodeParam) {
+                const episodeNum = parseInt(episodeParam);
+                if (!isNaN(episodeNum)) {
+                    currentEpisode = episodeNum;
+                    updateCurrentEpisodeInfo();
+                    highlightCurrentEpisode();
+                }
+            }
+
+            // 如果有动漫ID，从API加载数据
+            if (animeId) {
+                loadAnimeDataForPlayer(animeId, parseInt(episodeParam)||1, videoUrl ? decodeURIComponent(videoUrl) : null);
+            }
+        }
+        
+        // 从API加载动漫数据用于播放器
+        async function loadAnimeDataForPlayer(animeId, ep, videoUrl) {
+            try {
+                const res = await fetch(`/api/anime/detail/${animeId}`);
+                const json = await res.json();
+                if (json.code !== 200 || !json.data) return;
+                const d = json.data;
+
+                // 更新标题
+                document.title = `${d.title} 第${ep}集 - 哈哈动漫网`;
+                const titleEls = document.querySelectorAll('.anime-title, .player-title, .info-title');
+                titleEls.forEach(el => el.textContent = d.title);
+
+                // 更新封面和信息
+                const coverEls = document.querySelectorAll('.sidebar-cover img, .anime-cover img');
+                coverEls.forEach(el => { el.src = d.coverImage || ''; el.alt = d.title; });
+
+                const ratingEls = document.querySelectorAll('.info-rating, .sidebar-rating');
+                ratingEls.forEach(el => el.textContent = '⭐ ' + d.rating);
+
+                const statusEls = document.querySelectorAll('.info-status, .sidebar-status');
+                statusEls.forEach(el => el.textContent = d.status);
+
+                // 更新剧集列表（从episode_urls）
+                if (d.episodeUrls) {
+                    try {
+                        const eps = JSON.parse(d.episodeUrls);
+                        if (eps && eps.length) {
+                            const episodeScroll = document.getElementById('episodeScroll');
+                            if (episodeScroll) {
+                                episodeScroll.innerHTML = eps.map(e => `
+                                    <div class="episode-item ${e.ep === ep ? 'current' : ''}" onclick="playEpisodeUrl(${e.ep},'${e.url||''}')">
+                                        <div class="episode-number">第${e.ep}集</div>
+                                        <div class="episode-duration">${e.title || ''}</div>
+                                    </div>
+                                `).join('');
+                            }
+                        }
+                    } catch(e) {}
+                }
+
+                // 如果有视频URL，尝试加载到播放器
+                const targetUrl = videoUrl || d.videoUrl;
+                if (targetUrl) {
+                    const video = document.querySelector('video');
+                    if (video) {
+                        video.src = targetUrl;
+                        showToast(`正在播放：${d.title} 第${ep}集`);
+                    }
+                }
+
+                // 更新详情按钮链接
+                const detailBtn = document.querySelector('.sidebar-btn, [onclick*="detail"]');
+                if (detailBtn) detailBtn.setAttribute('onclick', `window.location.href='/anime/detail?id=${animeId}'`);
+
+                // 加载推荐
+                loadRecommend(d.type, animeId);
+
+            } catch(e) { console.log('加载播放器数据失败', e); }
+        }
+
+        function playEpisodeUrl(ep, url) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const animeId = urlParams.get('id');
+            window.location.href = `/anime/player?id=${animeId}&ep=${ep}&url=${encodeURIComponent(url)}`;
+        }
+
+        // 加载推荐动漫
+        async function loadRecommend(type, excludeId) {
+            try {
+                const res = await fetch(`/api/anime/ranking?type=${encodeURIComponent(type||'全部')}&sortBy=viewCount&limit=6`);
+                const json = await res.json();
+                if (json.code !== 200) return;
+                const list = json.data.filter(a => String(a.id) !== String(excludeId)).slice(0, 5);
+                const container = document.querySelector('.recommend-list, .sidebar-recommend, #recommend-list');
+                if (container && list.length) {
+                    container.innerHTML = list.map(a => `
+                        <div class="recommend-sidebar-item" onclick="window.location.href='/anime/player?id=${a.id}&ep=1'" style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background=''">
+                            <img src="${a.coverImage||''}" style="width:64px;height:88px;object-fit:cover;border-radius:4px;flex-shrink:0" onerror="this.style.background='linear-gradient(135deg,#667eea,#764ba2)'">
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:4px">${a.title}</div>
+                                <div style="font-size:11px;color:rgba(255,255,255,.4)">⭐${a.rating} · ${a.status}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {}
+        }
+
+        
+        // 生成剧集列表
+        function generateEpisodeList() {
+            const episodeScroll = document.getElementById('episodeScroll');
+            episodeScroll.innerHTML = '';
+            
+            episodes.forEach(episode => {
+                const episodeItem = document.createElement('div');
+                episodeItem.className = `episode-item ${episode.current ? 'current' : ''}`;
+                episodeItem.onclick = () => playEpisode(episode.number);
+                
+                episodeItem.innerHTML = `
+                    <div class="episode-number">第${episode.number}集</div>
+                    <div class="episode-duration">${episode.duration}分钟</div>
+                `;
+                
+                episodeScroll.appendChild(episodeItem);
+            });
+        }
+        
+        // 搜索剧集
+        function searchEpisodes(query) {
+            const filteredEpisodes = episodes.filter(ep => 
+                ep.number.toString().includes(query) || 
+                getEpisodeTitle(ep.number).includes(query)
+            );
+            
+            const episodeScroll = document.getElementById('episodeScroll');
+            episodeScroll.innerHTML = '';
+            
+            filteredEpisodes.forEach(episode => {
+                const episodeItem = document.createElement('div');
+                episodeItem.className = `episode-item ${episode.current ? 'current' : ''}`;
+                episodeItem.onclick = () => playEpisode(episode.number);
+                
+                episodeItem.innerHTML = `
+                    <div class="episode-number">第${episode.number}集</div>
+                    <div class="episode-duration">${episode.duration}分钟</div>
+                `;
+                
+                episodeScroll.appendChild(episodeItem);
+            });
+        }
+        
+        // 播放剧集
+        function playEpisode(episodeNumber) {
+            currentEpisode = episodeNumber;
+            updateCurrentEpisodeInfo();
+            highlightCurrentEpisode();
+            
+            // 重置播放器
+            currentTime = 0;
+            isPlaying = true;
+            updateTimeDisplay();
+            updateProgressBar();
+            
+            // 显示播放提示
+            showToast(`开始播放第${episodeNumber}集：${getEpisodeTitle(episodeNumber)}`);
+            
+            // 更新URL参数
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('episode', episodeNumber);
+            window.history.replaceState({}, '', newUrl);
+        }
+        
+        // 播放其他动漫
+        function playAnime(animeName, episodeNumber) {
+            showToast(`正在打开${animeName}第${episodeNumber}集...`);
+            setTimeout(() => {
+                window.location.href = `/anime/player?title=${encodeURIComponent(animeName)}&ep=${episodeNumber}`;
+            }, 500);
+        }
+        
+        // 更新当前剧集信息
+        function updateCurrentEpisodeInfo() {
+            const episodeTitle = document.querySelector('.current-episode');
+            if (episodeTitle) {
+                episodeTitle.textContent = `第${currentEpisode}集 · ${getEpisodeTitle(currentEpisode)} · 24分30秒`;
+            }
+            
+            const pageTitle = document.querySelector('title');
+            if (pageTitle) {
+                pageTitle.textContent = `播放中 - 海贼王第${currentEpisode}集 - 哈哈动漫网`;
+            }
+        }
+        
+        // 高亮当前剧集
+        function highlightCurrentEpisode() {
+            document.querySelectorAll('.episode-item').forEach(item => {
+                item.classList.remove('current');
+            });
+            
+            // 更新剧集数据中的当前状态
+            episodes.forEach(ep => {
+                ep.current = ep.number === currentEpisode;
+            });
+            
+            // 重新生成列表以反映更改
+            generateEpisodeList();
+        }
+        
+        // 播放/暂停
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const playBtn = document.querySelector('.control-btn:nth-child(1)');
+            playBtn.textContent = isPlaying ? '⏸️' : '⏯️';
+            
+            if (isPlaying) {
+                showToast('继续播放');
+                // 在实际应用中，这里会调用视频播放器的play()方法
+            } else {
+                showToast('已暂停');
+                // 在实际应用中，这里会调用视频播放器的pause()方法
+            }
+        }
+        
+        // 快退
+        function skipBackward() {
+            currentTime = Math.max(0, currentTime - 10);
+            updateTimeDisplay();
+            updateProgressBar();
+            showToast('快退10秒');
+        }
+        
+        // 快进
+        function skipForward() {
+            currentTime = Math.min(totalTime, currentTime + 10);
+            updateTimeDisplay();
+            updateProgressBar();
+            showToast('快进10秒');
+        }
+        
+        // 播放上一集
+        function playPrevEpisode() {
+            const prevEpisode = currentEpisode - 1;
+            if (prevEpisode >= 1) {
+                playEpisode(prevEpisode);
+            } else {
+                showToast('已经是第一集了');
+            }
+        }
+        
+        // 播放下一集
+        function playNextEpisode() {
+            const nextEpisode = currentEpisode + 1;
+            // 假设总共有1100集
+            if (nextEpisode <= 1100) {
+                playEpisode(nextEpisode);
+            } else {
+                showToast('已经是最新一集了');
+            }
+        }
+        
+        // 跳转播放进度
+        function seekVideo(event) {
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            
+            currentTime = percentage * totalTime;
+            updateTimeDisplay();
+            updateProgressBar();
+            
+            showToast(`跳转到 ${formatTime(currentTime)}`);
+        }
+        
+        // 切换静音
+        function toggleMute() {
+            isMuted = !isMuted;
+            const muteBtn = document.querySelector('.control-btn[onclick="toggleMute()"]');
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            
+            if (isMuted) {
+                volume = 0;
+            } else {
+                volume = 0.7;
+            }
+            
+            updateVolumeDisplay();
+            showToast(isMuted ? '已静音' : '取消静音');
+        }
+        
+        // 调整音量
+        function changeVolume(event) {
+            const volumeSlider = event.currentTarget;
+            const rect = volumeSlider.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            
+            volume = Math.max(0, Math.min(1, percentage));
+            isMuted = volume === 0;
+            
+            const muteBtn = document.querySelector('.control-btn[onclick="toggleMute()"]');
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            
+            updateVolumeDisplay();
+        }
+        
+        // 切换全屏
+        function toggleFullscreen() {
+            const videoContainer = document.querySelector('.video-container');
+            
+            if (!document.fullscreenElement) {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+                showToast('进入全屏模式');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                showToast('退出全屏模式');
+            }
+        }
+        
+        // 更新进度条
+        function updateProgressBar() {
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (currentTime / totalTime) * 100;
+            progressFill.style.width = `${percentage}%`;
+        }
+        
+        // 更新时间显示
+        function updateTimeDisplay() {
+            const currentTimeEl = document.getElementById('currentTime');
+            const totalTimeEl = document.getElementById('totalTime');
+            
+            currentTimeEl.textContent = formatTime(currentTime);
+            totalTimeEl.textContent = formatTime(totalTime);
+        }
+        
+        // 更新音量显示
+        function updateVolumeDisplay() {
+            const volumeFill = document.getElementById('volumeFill');
+            volumeFill.style.width = `${volume * 100}%`;
+        }
+        
+        // 格式化时间 (秒 -> MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // 提交评论
+        function submitComment() {
+            const textarea = document.querySelector('.comment-input textarea');
+            const comment = textarea.value.trim();
+            
+            if (!comment) {
+                showToast('请输入评论内容');
+                return;
+            }
+            
+            // 在实际应用中，这里会发送AJAX请求保存评论
+            showToast('评论发表成功！');
+            textarea.value = '';
+            
+            // 模拟添加新评论到列表顶部
+            const commentList = document.querySelector('.comment-list');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            newComment.innerHTML = `
+                <div class="comment-header">
+                    <div class="comment-avatar"></div>
+                    <div>
+                        <div class="comment-user">我</div>
+                        <div class="comment-time">刚刚</div>
+                    </div>
+                </div>
+                <div class="comment-content">${comment}</div>
+            `;
+            
+            commentList.insertBefore(newComment, commentList.firstChild);
+        }
+        
+        // 切换清晰度
+        document.getElementById('qualitySelect').addEventListener('change', function() {
+            const quality = this.value;
+            showToast(`切换至${quality}画质`);
+        });
+        
+        // Toast提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 25px;
+                z-index: 10000;
+                animation: fadeInOut 2s ease-in-out;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+        
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+            
+            .recommend-sidebar-item {
+                padding: 10px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            
+            .recommend-sidebar-item:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateX(5px);
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+        
+        // 模拟播放进度更新
+        setInterval(() => {
+            if (isPlaying && currentTime < totalTime) {
+                currentTime += 1;
+                updateTimeDisplay();
+                updateProgressBar();
+                
+                // 每60秒自动保存播放进度
+                if (Math.floor(currentTime) % 60 === 0) {
+                    // 在实际应用中，这里会保存播放进度到服务器
+                }
+            } else if (currentTime >= totalTime) {
+                // 播放结束，自动播放下一集
+                isPlaying = false;
+                const playBtn = document.querySelector('.control-btn:nth-child(1)');
+                playBtn.textContent = '⏯️';
+                showToast('本集播放完毕，即将播放下一集...');
+                
+                setTimeout(() => {
+                    playNextEpisode();
+                }, 3000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
