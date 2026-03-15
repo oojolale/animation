@@ -3,5 +3,9 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/sql/add_author_field.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sql/anime_tables.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/users/roles.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/users/user_info.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/users/users.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/users/users_roles.sql" dialect="GenericSQL" />
   </component>
 </project>
