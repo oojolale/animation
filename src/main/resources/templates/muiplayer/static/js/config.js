@@ -1,7 +1,7 @@
 var playerConfig = {
     container:'#mui-player',
-    title:'風紀委員とフーゾク活動 ＃1',
-    src:'/files/lf-2025-04/CHS/250425OVA 風紀委員とフーゾク活動 ＃1.chs.mp4',
+    title:'火焰的做法',
+    src:'/课时114：火焰的做法.mp4',
     poster:'https://muiplayer.oss-cn-shanghai.aliyuncs.com/static/image/poster.jpg',
     videoAttribute:[
         {attrKey:'webkit-playsinline',attrValue:''},
