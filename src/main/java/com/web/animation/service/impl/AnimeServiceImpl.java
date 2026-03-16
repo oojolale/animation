@@ -138,14 +138,16 @@ public class AnimeServiceImpl implements AnimeService {
     public AnimeDetail getAnimeDetailByTitle(String title) {
         LambdaQueryWrapper<AnimeDetail> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(AnimeDetail::getTitle, title);
+        wrapper.last("LIMIT 1"); // 只取第一条记录
         AnimeDetail detail = animeDetailMapper.selectOne(wrapper);
-        
+
         // 如果anime_detail表没有数据，从anime表获取
         if (detail == null) {
             LambdaQueryWrapper<Anime> animeWrapper = new LambdaQueryWrapper<>();
             animeWrapper.eq(Anime::getTitle, title);
+            animeWrapper.last("LIMIT 1"); // 只取第一条记录
             Anime anime = animeMapper.selectOne(animeWrapper);
-            
+
             if (anime != null) {
                 // 调用getAnimeDetailById来获取或创建详情
                 return getAnimeDetailById(anime.getId());

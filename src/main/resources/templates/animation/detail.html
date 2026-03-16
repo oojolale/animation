@@ -576,9 +576,9 @@
         <div class="breadcrumb">
             <a href="/animation/index.html">首页</a>
             <span>&gt;</span>
-            <a href="/animation/japanese.html">日本动漫</a>
+            <a href="/animation/japanese.html" id="breadcrumb-type-link">日本动漫</a>
             <span>&gt;</span>
-            <span>海贼王 One Piece</span>
+            <span id="breadcrumb-anime-name">海贼王 One Piece</span>
         </div>
         
         <!-- 主要信息区 -->
@@ -1065,9 +1065,30 @@
             renderEpisodes(d);
 
             // 9. 更新面包屑导航
-            const breadcrumbSpan = document.querySelector('.breadcrumb span:last-child');
-            if (breadcrumbSpan) {
-                breadcrumbSpan.textContent = d.title;
+            const breadcrumbTypeLink = document.getElementById('breadcrumb-type-link');
+            const breadcrumbAnimeName = document.getElementById('breadcrumb-anime-name');
+
+            // 类型页面映射
+            const typePageMap = {
+                '日本': '/animation/japanese.html',
+                '国产': '/animation/chinese.html',
+                '欧美': '/animation/western.html'
+            };
+            const typeDisplayMap = {
+                '日本': '日本动漫',
+                '国产': '国产动漫',
+                '欧美': '欧美动漫'
+            };
+
+            if (breadcrumbTypeLink) {
+                const typePage = typePageMap[d.type] || '/animation/japanese.html';
+                const typeDisplay = typeDisplayMap[d.type] || d.type;
+                breadcrumbTypeLink.href = typePage;
+                breadcrumbTypeLink.textContent = typeDisplay;
+            }
+
+            if (breadcrumbAnimeName) {
+                breadcrumbAnimeName.textContent = d.title;
             }
 
             // 10. 初始化收藏按钮

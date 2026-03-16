@@ -587,6 +587,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #764ba2, #667eea);
         }
+
+        /* 隐藏播放器内部的返回按钮 */
+        #mui-player #back-button,
+        #mui-player .back-button,
+        #mui-player .header-control.back-button,
+        #mui-player #title-groupt {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -622,14 +630,14 @@
 <!-- 播放页面内容 -->
 <div class="container player-container">
     <!-- 面包屑导航 -->
-    <div class="breadcrumb">
+    <div class="breadcrumb" id="breadcrumb">
         <a href="/animation/index.html">首页</a>
         <span>&gt;</span>
-        <a href="/animation/japanese.html">日本动漫</a>
+        <a href="/animation/index.html" id="breadcrumb-type-link">日本动漫</a>
         <span>&gt;</span>
-        <a href="/animation/detail.html">海贼王</a>
+        <a href="/animation/detail.html" id="breadcrumb-anime-link">海贼王</a>
         <span>&gt;</span>
-        <span>第1100集 播放中</span>
+        <span id="breadcrumb-episode">第1100集 播放中</span>
     </div>
 
     <div class="player-main">
@@ -655,8 +663,8 @@
 
             <!-- 当前播放信息 -->
             <div class="current-info">
-                <div class="current-title">海贼王 One Piece</div>
-                <div class="current-episode">第1100集 · 最终决战！路飞VS凯多 · 24分30秒</div>
+                <div class="current-title" id="page-title">加载中...</div>
+                <div class="current-episode" id="page-episode">加载中...</div>
                 <div class="current-actions">
                     <button class="current-btn prev" onclick="playPrevEpisode()">◀ 上一集</button>
                     <button class="current-btn next" onclick="playNextEpisode()">下一集 ▶</button>
@@ -683,30 +691,30 @@
                 <div class="anime-sidebar-title">
                     <span>📺 动漫信息</span>
                 </div>
-                <div class="anime-sidebar-cover"></div>
+                <div class="anime-sidebar-cover" id="sidebar-cover"></div>
                 <div class="anime-sidebar-info">
                     <div class="anime-sidebar-info-item">
                         <span class="info-label">名称：</span>
-                        <span class="info-value">海贼王</span>
+                        <span class="info-value" id="sidebar-title">加载中...</span>
                     </div>
                     <div class="anime-sidebar-info-item">
                         <span class="info-label">类型：</span>
-                        <span class="info-value">热血 / 冒险 / 战斗</span>
+                        <span class="info-value" id="sidebar-type">加载中...</span>
                     </div>
                     <div class="anime-sidebar-info-item">
                         <span class="info-label">状态：</span>
-                        <span class="info-value">更新中</span>
+                        <span class="info-value" id="sidebar-status">加载中...</span>
                     </div>
                     <div class="anime-sidebar-info-item">
                         <span class="info-label">评分：</span>
-                        <span class="info-value">⭐ 9.8</span>
+                        <span class="info-value" id="sidebar-rating">加载中...</span>
                     </div>
                     <div class="anime-sidebar-info-item">
                         <span class="info-label">总集数：</span>
-                        <span class="info-value">1100+</span>
+                        <span class="info-value" id="sidebar-episodes">加载中...</span>
                     </div>
                 </div>
-                <button class="sidebar-btn" onclick="window.location.href='/anime/detail?id='+(new URLSearchParams(window.location.search).get('id')||'')" >查看详情</button>
+                <button class="sidebar-btn" onclick="window.location.href='/animation/detail.html?id='+(new URLSearchParams(window.location.search).get('id')||'')" >查看详情</button>
             </div>
 
             <!-- 相关推荐 -->
@@ -910,16 +918,8 @@
         }
     }
 
-    // 剧集数据
-    const episodes = [];
-    for (let i = 1; i <= 30; i++) {
-        episodes.push({
-            number: 1100 - i + 1,
-            title: getEpisodeTitle(1100 - i + 1),
-            duration: Math.floor(Math.random() * 5) + 20, // 20-25分钟
-            current: (1100 - i + 1) === currentEpisode
-        });
-    }
+    // 剧集数据（将从API动态加载）
+    let episodes = [];
 
     // 获取剧集标题
     function getEpisodeTitle(episodeNumber) {
@@ -962,28 +962,29 @@
         // 从URL参数获取动漫ID和剧集信息
         const urlParams = new URLSearchParams(window.location.search);
         const animeId = urlParams.get('id');
-        const episodeParam = urlParams.get('ep') || urlParams.get('episode');
+        const animeTitle = urlParams.get('anime');
+        const episodeParam = urlParams.get('ep') || urlParams.get('episode') || '1';
         const videoUrl = urlParams.get('url');
 
         // 初始化 MuiPlayer
         initMuiPlayer(videoUrl ? decodeURIComponent(videoUrl) : null);
 
-        if (episodeParam) {
-            const episodeNum = parseInt(episodeParam);
-            if (!isNaN(episodeNum)) {
-                currentEpisode = episodeNum;
-                updateCurrentEpisodeInfo();
-                highlightCurrentEpisode();
-            }
+        const episodeNum = parseInt(episodeParam);
+        if (!isNaN(episodeNum)) {
+            currentEpisode = episodeNum;
+            updateCurrentEpisodeInfo();
+            highlightCurrentEpisode();
         }
 
-        // 如果有动漫ID，从API加载数据
+        // 如果有动漫ID或动漫名称，从API加载数据
         if (animeId) {
-            loadAnimeDataForPlayer(animeId, parseInt(episodeParam)||1, videoUrl ? decodeURIComponent(videoUrl) : null);
+            loadAnimeDataForPlayer(animeId, episodeNum, videoUrl ? decodeURIComponent(videoUrl) : null);
+        } else if (animeTitle) {
+            loadAnimeDataByTitle(animeTitle, episodeNum, videoUrl ? decodeURIComponent(videoUrl) : null);
         }
     }
 
-    // 从API加载动漫数据用于播放器
+    // 从API加载动漫数据用于播放器（通过ID）
     async function loadAnimeDataForPlayer(animeId, ep, videoUrl) {
         try {
             const res = await fetch(`/api/anime/detail/${animeId}`);
@@ -991,85 +992,406 @@
             if (json.code !== 200 || !json.data) return;
             const d = json.data;
 
-            // 更新标题
-            document.title = `${d.title} 第${ep}集 - 哈哈动漫网`;
-            const titleEls = document.querySelectorAll('.anime-title, .player-title, .info-title');
-            titleEls.forEach(el => el.textContent = d.title);
+            updateAnimeInfo(d, animeId, ep, videoUrl);
+        } catch(e) {
+            console.log('加载播放器数据失败', e);
+            // 加载失败时设置默认值
+            updateAnimeInfoDefault();
+        }
+    }
 
-            // 更新封面和信息
-            const coverEls = document.querySelectorAll('.sidebar-cover img, .anime-cover img');
-            coverEls.forEach(el => { el.src = d.coverImage || ''; el.alt = d.title; });
+    // 从API加载动漫数据用于播放器（通过标题）
+    async function loadAnimeDataByTitle(animeTitle, ep, videoUrl) {
+        try {
+            const res = await fetch(`/api/anime/detail?title=${encodeURIComponent(animeTitle)}`);
+            const json = await res.json();
 
-            const ratingEls = document.querySelectorAll('.info-rating, .sidebar-rating');
-            ratingEls.forEach(el => el.textContent = '⭐ ' + d.rating);
+            if (json.code !== 200) {
+                console.log('API返回错误:', json.message);
+                // API返回错误，尝试搜索动漫基本信息
+                await loadAnimeBasicInfo(animeTitle, ep);
+                return;
+            }
 
-            const statusEls = document.querySelectorAll('.info-status, .sidebar-status');
-            statusEls.forEach(el => el.textContent = d.status);
+            const d = json.data;
+            if (!d) {
+                console.log('没有找到动漫数据，尝试搜索基本信息');
+                // 没有数据，尝试搜索动漫基本信息
+                await loadAnimeBasicInfo(animeTitle, ep);
+                return;
+            }
 
-            // 更新剧集列表（从episode_urls）
-            if (d.episodeUrls) {
-                try {
-                    const eps = JSON.parse(d.episodeUrls);
-                    if (eps && eps.length) {
-                        const episodeScroll = document.getElementById('episodeScroll');
-                        if (episodeScroll) {
-                            episodeScroll.innerHTML = eps.map(e => `
-                                    <div class="episode-item ${e.ep === ep ? 'current' : ''}" onclick="playEpisodeUrl(${e.ep},'${e.url||''}')">
-                                        <div class="episode-number">第${e.ep}集</div>
-                                        <div class="episode-duration">${e.title || ''}</div>
-                                    </div>
-                                `).join('');
-                        }
+            // 如果返回的数据有id，使用id；否则使用title
+            const animeId = d.id || d.animeId;
+            updateAnimeInfo(d, animeId, ep, videoUrl);
+        } catch(e) {
+            console.log('加载播放器数据失败', e);
+            // 加载失败时，尝试搜索动漫基本信息
+            await loadAnimeBasicInfo(animeTitle, ep);
+        }
+    }
+
+    // 加载动漫基本信息（当详情加载失败时）
+    async function loadAnimeBasicInfo(animeTitle, ep) {
+        try {
+            // 尝试通过搜索API获取动漫基本信息
+            const res = await fetch(`/api/anime/search?keyword=${encodeURIComponent(animeTitle)}&page=1&size=1`);
+            const json = await res.json();
+
+            if (json.code === 200 && json.data && json.data.records && json.data.records.length > 0) {
+                const anime = json.data.records[0];
+                // 构造一个类似AnimeDetail的对象
+                const detail = {
+                    id: anime.id,
+                    title: anime.title,
+                    type: anime.type,
+                    coverImage: anime.coverImage,
+                    rating: anime.rating,
+                    status: anime.status,
+                    tags: anime.tags,
+                    totalEpisodes: anime.totalEpisodes || 0,
+                    viewCount: anime.viewCount
+                };
+                updateAnimeInfo(detail, anime.id, ep, null);
+            } else {
+                // 搜索也失败，设置默认值
+                updateAnimeInfoDefault(animeTitle);
+            }
+        } catch(e) {
+            console.log('搜索动漫基本信息失败', e);
+            updateAnimeInfoDefault(animeTitle);
+        }
+    }
+
+    // 设置默认动漫信息（当API加载失败时）
+    function updateAnimeInfoDefault(animeTitle = '') {
+        const titleText = animeTitle || '加载中...';
+
+        // 更新面包屑导航
+        const breadcrumbTypeLink = document.getElementById('breadcrumb-type-link');
+        const breadcrumbAnimeLink = document.getElementById('breadcrumb-anime-link');
+        if (breadcrumbTypeLink) {
+            breadcrumbTypeLink.textContent = '加载中...';
+            breadcrumbTypeLink.href = '/animation/index.html';
+            breadcrumbTypeLink.style.pointerEvents = 'none'; // 禁用点击
+            breadcrumbTypeLink.style.color = '#999';
+        }
+        if (breadcrumbAnimeLink) {
+            breadcrumbAnimeLink.textContent = titleText;
+            breadcrumbAnimeLink.href = '#';
+            breadcrumbAnimeLink.style.pointerEvents = 'none'; // 禁用点击
+            breadcrumbAnimeLink.style.color = '#999';
+        }
+
+        const breadcrumbEpisode = document.getElementById('breadcrumb-episode');
+        if (breadcrumbEpisode) {
+            breadcrumbEpisode.textContent = `第${currentEpisode}集 播放中`;
+        }
+
+        // 更新当前播放信息
+        const currentTitleEl = document.getElementById('page-title');
+        if (currentTitleEl) {
+            currentTitleEl.textContent = titleText;
+        }
+
+        const currentEpisodeEl = document.getElementById('page-episode');
+        if (currentEpisodeEl) {
+            currentEpisodeEl.textContent = `第${currentEpisode}集 · 播放中`;
+        }
+
+        // 更新右侧动漫信息侧边栏
+        const sidebarTitle = document.getElementById('sidebar-title');
+        if (sidebarTitle) {
+            sidebarTitle.textContent = titleText;
+        }
+
+        const sidebarType = document.getElementById('sidebar-type');
+        if (sidebarType) {
+            sidebarType.textContent = '加载中...';
+        }
+
+        const sidebarStatus = document.getElementById('sidebar-status');
+        if (sidebarStatus) {
+            sidebarStatus.textContent = '加载中...';
+        }
+
+        const sidebarRating = document.getElementById('sidebar-rating');
+        if (sidebarRating) {
+            sidebarRating.textContent = '加载中...';
+        }
+
+        const sidebarEpisodes = document.getElementById('sidebar-episodes');
+        if (sidebarEpisodes) {
+            sidebarEpisodes.textContent = '加载中...';
+        }
+    }
+
+    // 更新动漫信息的通用函数
+    function updateAnimeInfo(d, animeId, ep, videoUrl) {
+        // 更新标题
+        document.title = `${d.title} 第${ep}集 - 哈哈动漫网`;
+
+        // 更新面包屑导航
+        const breadcrumbTypeLink = document.getElementById('breadcrumb-type-link');
+        const breadcrumbAnimeLink = document.getElementById('breadcrumb-anime-link');
+        if (breadcrumbTypeLink && breadcrumbAnimeLink) {
+            const typePageMap = {
+                '日本': '/animation/japanese.html',
+                '国产': '/animation/chinese.html',
+                '欧美': '/animation/western.html'
+            };
+            const typeDisplayMap = {
+                '日本': '日本动漫',
+                '国产': '国产动漫',
+                '欧美': '欧美动漫'
+            };
+            const typePage = typePageMap[d.type] || '/animation/index.html';
+            const typeDisplay = typeDisplayMap[d.type] || d.type;
+            breadcrumbTypeLink.href = typePage;
+            breadcrumbTypeLink.textContent = typeDisplay;
+            breadcrumbTypeLink.style.pointerEvents = 'auto'; // 启用点击
+            breadcrumbTypeLink.style.color = ''; // 恢复默认颜色
+
+            breadcrumbAnimeLink.href = `/anime/detail?id=${animeId}`;
+            breadcrumbAnimeLink.textContent = d.title;
+            breadcrumbAnimeLink.style.pointerEvents = 'auto'; // 启用点击
+            breadcrumbAnimeLink.style.color = ''; // 恢复默认颜色
+        }
+
+        // 更新面包屑中的集数
+        const breadcrumbEpisode = document.getElementById('breadcrumb-episode');
+        if (breadcrumbEpisode) {
+            breadcrumbEpisode.textContent = `第${ep}集 播放中`;
+        }
+
+        // 更新当前播放信息
+        const currentTitleEl = document.getElementById('page-title');
+        if (currentTitleEl) {
+            currentTitleEl.textContent = d.title;
+        }
+
+        const currentEpisodeEl = document.getElementById('page-episode');
+        if (currentEpisodeEl) {
+            currentEpisodeEl.textContent = `第${ep}集 · 播放中`;
+        }
+
+        // 更新右侧动漫信息侧边栏
+        const sidebarTitle = document.querySelector('.anime-sidebar-title');
+        if (sidebarTitle) {
+            sidebarTitle.innerHTML = '<span>📺 动漫信息</span>';
+        }
+
+        const sidebarCover = document.getElementById('sidebar-cover');
+        if (sidebarCover) {
+            if (d.coverImage) {
+                sidebarCover.style.background = `url('${d.coverImage}') center/cover no-repeat`;
+            } else {
+                sidebarCover.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }
+        }
+
+        const sidebarTitleEl = document.getElementById('sidebar-title');
+        if (sidebarTitleEl) {
+            sidebarTitleEl.textContent = d.title;
+        }
+
+        const sidebarType = document.getElementById('sidebar-type');
+        if (sidebarType) {
+            const tags = d.tags || '暂无标签';
+            sidebarType.textContent = tags;
+        }
+
+        const sidebarStatus = document.getElementById('sidebar-status');
+        if (sidebarStatus) {
+            sidebarStatus.textContent = d.status;
+        }
+
+        const sidebarRating = document.getElementById('sidebar-rating');
+        if (sidebarRating) {
+            sidebarRating.textContent = `⭐ ${d.rating}`;
+        }
+
+        const sidebarEpisodes = document.getElementById('sidebar-episodes');
+        if (sidebarEpisodes) {
+            sidebarEpisodes.textContent = `${d.totalEpisodes}+`;
+        }
+
+        const detailBtn = document.querySelector('.anime-sidebar .sidebar-btn');
+        if (detailBtn) {
+            detailBtn.setAttribute('onclick', `window.location.href='/animation/detail.html?id=${animeId}'`);
+        }
+
+        // 更新剧集列表（从episode_urls）
+        if (d.episodeUrls) {
+            try {
+                const eps = JSON.parse(d.episodeUrls);
+                if (eps && eps.length) {
+                    const episodeScroll = document.getElementById('episodeScroll');
+                    if (episodeScroll) {
+                        episodeScroll.innerHTML = eps.map(e => `
+                                <div class="episode-item ${e.ep === ep ? 'current' : ''}" onclick="playEpisodeUrl(${e.ep},'${e.url||''}')">
+                                    <div class="episode-number">第${e.ep}集</div>
+                                    <div class="episode-duration">${e.title || ''}</div>
+                                </div>
+                            `).join('');
                     }
-                } catch(e) {}
-            }
-
-            // 如果有视频URL，加载到 MuiPlayer
-            const targetUrl = videoUrl || d.videoUrl;
-            if (muiPlayer && targetUrl) {
-                muiPlayer.config.src = targetUrl;
-                muiPlayer.config.title = `${d.title} 第${ep}集`;
-                if (muiPlayer.video()) {
-                    muiPlayer.video().src = targetUrl;
                 }
-                showToast(`正在播放：${d.title} 第${ep}集`);
+            } catch(e) {}
+        }
+
+        // 如果有视频URL，加载到 MuiPlayer
+        const targetUrl = videoUrl || d.videoUrl;
+        if (muiPlayer && targetUrl) {
+            muiPlayer.config.src = targetUrl;
+            muiPlayer.config.title = `${d.title} 第${ep}集`;
+            if (muiPlayer.video()) {
+                muiPlayer.video().src = targetUrl;
+            }
+            // 更新播放器UI中的标题和其他元素
+            updatePlayerUI(`${d.title} 第${ep}集`);
+            showToast(`正在播放：${d.title} 第${ep}集`);
+        }
+
+        // 加载推荐
+        loadRecommend(d.type, animeId);
+    }
+
+    // 更新播放器UI中的标题和其他元素
+    function updatePlayerUI(titleText) {
+        if (!muiPlayer) return;
+
+        // 更新配置中的标题
+        muiPlayer.config.title = titleText;
+
+        // 尝试更新播放器UI中的标题元素
+        setTimeout(() => {
+            // 优先更新 #title-name 元素（返回按钮内的标题）
+            const titleNameEl = document.getElementById('title-name');
+            if (titleNameEl) {
+                titleNameEl.textContent = titleText;
             }
 
-            // 更新详情按钮链接
-            const detailBtn = document.querySelector('.sidebar-btn, [onclick*="detail"]');
-            if (detailBtn) detailBtn.setAttribute('onclick', `window.location.href='/anime/detail?id=${animeId}'`);
+            // 更新 #title-groupt 内的标题
+            const titleGroupEl = document.getElementById('title-groupt');
+            if (titleGroupEl) {
+                const titleInGroup = titleGroupEl.querySelector('.title-name, .title');
+                if (titleInGroup) {
+                    titleInGroup.textContent = titleText;
+                }
+            }
 
-            // 加载推荐
-            loadRecommend(d.type, animeId);
+            // MuiPlayer的标题通常在以下元素中
+            const titleSelectors = [
+                '#mui-player .title',
+                '#mui-player .player-title',
+                '#mui-player .video-title',
+                '#mui-player .m-player-header-title',
+                '#mui-player .header-title'
+            ];
+            titleSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    el.textContent = titleText;
+                });
+            });
 
-        } catch(e) { console.log('加载播放器数据失败', e); }
+            // 尝试更新返回按钮的标题
+            const backButtonSelectors = [
+                '#mui-player .back-button',
+                '#mui-player .header-control .back-button',
+                '#mui-player .m-player-back-btn'
+            ];
+            backButtonSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (el.hasAttribute('title')) {
+                        el.setAttribute('title', '返回');
+                    }
+                });
+            });
+
+            // 尝试更新键盘输入相关的提示
+            const keyboardSelectors = [
+                '#mui-player .keyboard-input',
+                '#mui-player .player-btn',
+                '#mui-player .m-player-controls'
+            ];
+            keyboardSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    // 如果有需要更新的提示文本，可以在这里添加
+                });
+            });
+        }, 100);
     }
 
     function playEpisodeUrl(ep, url) {
         const urlParams = new URLSearchParams(window.location.search);
         const animeId = urlParams.get('id');
+        const animeTitle = urlParams.get('anime');
+
+        // 更新当前集数
+        currentEpisode = ep;
+
+        // 更新当前播放信息
+        updateCurrentEpisodeInfo();
+
+        // 更新面包屑导航中的集数
+        const breadcrumbEpisode = document.getElementById('breadcrumb-episode');
+        if (breadcrumbEpisode) {
+            breadcrumbEpisode.textContent = `第${ep}集 播放中`;
+        }
+
+        // 手动更新剧集列表的高亮状态（直接操作DOM）
+        const episodeItems = document.querySelectorAll('.episode-item');
+        episodeItems.forEach(item => {
+            item.classList.remove('current');
+            const numberText = item.querySelector('.episode-number')?.textContent;
+            if (numberText && numberText === `第${ep}集`) {
+                item.classList.add('current');
+            }
+        });
+
+        // 更新 URL 参数（无论是否有视频URL都要更新）
+        const newUrl = new URL(window.location);
+        // 删除可能存在的 ep/url 参数
+        newUrl.searchParams.delete('ep');
+        newUrl.searchParams.delete('url');
+        // 根据原始URL使用的是 id 还是 anime 来决定如何更新
+        if (animeTitle) {
+            newUrl.searchParams.set('episode', ep);
+        } else if (animeId) {
+            newUrl.searchParams.set('ep', ep);
+        } else {
+            newUrl.searchParams.set('episode', ep);
+        }
+        window.history.replaceState({}, '', newUrl);
 
         // 如果有 MuiPlayer 实例，直接切换视频
         if (muiPlayer && url) {
-            currentEpisode = ep;
-            updateCurrentEpisodeInfo();
-            highlightCurrentEpisode();
-
             const video = muiPlayer.video();
             if (video) {
                 video.src = url;
                 video.play();
-                showToast(`正在播放第${ep}集`);
             }
 
-            // 更新 URL 参数但不刷新页面
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set('ep', ep);
-            newUrl.searchParams.set('url', url);
-            window.history.replaceState({}, '', newUrl);
+            // 更新播放器标题和UI
+            const currentTitleEl = document.getElementById('page-title');
+            if (currentTitleEl) {
+                const animeTitleFromEl = currentTitleEl.textContent;
+                const playerTitle = `${animeTitleFromEl} 第${ep}集`;
+                muiPlayer.config.title = playerTitle;
+                updatePlayerUI(playerTitle);
+            }
+
+            showToast(`正在播放第${ep}集`);
         } else {
             // 否则刷新页面
-            window.location.href = `/anime/player?id=${animeId}&ep=${ep}&url=${encodeURIComponent(url)}`;
+            if (animeTitle) {
+                window.location.href = `/animation/player.html?anime=${encodeURIComponent(animeTitle)}&episode=${ep}`;
+            } else {
+                window.location.href = `/animation/player.html?id=${animeId}&ep=${ep}`;
+            }
         }
     }
 
@@ -1101,6 +1423,12 @@
         const episodeScroll = document.getElementById('episodeScroll');
         episodeScroll.innerHTML = '';
 
+        // 如果没有剧集数据，显示提示信息
+        if (!episodes || episodes.length === 0) {
+            episodeScroll.innerHTML = '<div style="padding: 30px; text-align: center; color: rgba(255,255,255,0.5);">暂无剧集数据</div>';
+            return;
+        }
+
         episodes.forEach(episode => {
             const episodeItem = document.createElement('div');
             episodeItem.className = `episode-item ${episode.current ? 'current' : ''}`;
@@ -1117,6 +1445,11 @@
 
     // 搜索剧集
     function searchEpisodes(query) {
+        // 如果没有剧集数据，不执行搜索
+        if (!episodes || episodes.length === 0) {
+            return;
+        }
+
         const filteredEpisodes = episodes.filter(ep =>
             ep.number.toString().includes(query) ||
             getEpisodeTitle(ep.number).includes(query)
@@ -1124,6 +1457,11 @@
 
         const episodeScroll = document.getElementById('episodeScroll');
         episodeScroll.innerHTML = '';
+
+        if (filteredEpisodes.length === 0) {
+            episodeScroll.innerHTML = '<div style="padding: 30px; text-align: center; color: rgba(255,255,255,0.5);">未找到匹配的剧集</div>';
+            return;
+        }
 
         filteredEpisodes.forEach(episode => {
             const episodeItem = document.createElement('div');
@@ -1141,9 +1479,41 @@
 
     // 播放剧集
     function playEpisode(episodeNumber) {
+        // 检查当前是否是从API加载的剧集列表
+        const episodeItems = document.querySelectorAll('.episode-item');
+        let episodeTitle = `第${episodeNumber}集`;
+        let episodeUrl = null;
+
+        // 尝试从DOM中获取剧集标题和URL
+        episodeItems.forEach(item => {
+            const numberText = item.querySelector('.episode-number')?.textContent;
+            const durationText = item.querySelector('.episode-duration')?.textContent;
+            if (numberText === `第${episodeNumber}集`) {
+                if (durationText && durationText !== `${Math.floor(Math.random() * 5) + 20}分钟`) {
+                    episodeTitle = durationText;
+                }
+                // 尝试从onclick属性获取URL
+                const onclickAttr = item.getAttribute('onclick');
+                if (onclickAttr) {
+                    const urlMatch = onclickAttr.match(/'([^']+)'/);
+                    if (urlMatch && urlMatch[1]) {
+                        episodeUrl = urlMatch[1];
+                    }
+                }
+            }
+        });
+
         currentEpisode = episodeNumber;
         updateCurrentEpisodeInfo();
-        highlightCurrentEpisode();
+
+        // 手动更新剧集列表的高亮状态（直接操作DOM）
+        episodeItems.forEach(item => {
+            item.classList.remove('current');
+            const numberText = item.querySelector('.episode-number')?.textContent;
+            if (numberText && numberText === `第${episodeNumber}集`) {
+                item.classList.add('current');
+            }
+        });
 
         // 重置播放器
         currentTime = 0;
@@ -1152,12 +1522,44 @@
         updateProgressBar();
 
         // 显示播放提示
-        showToast(`开始播放第${episodeNumber}集：${getEpisodeTitle(episodeNumber)}`);
+        showToast(`开始播放第${episodeNumber}集`);
 
-        // 更新URL参数
+        // 更新URL参数（无论是否有视频URL都要更新）
+        const urlParams = new URLSearchParams(window.location.search);
+        const animeId = urlParams.get('id');
+        const animeTitleParam = urlParams.get('anime');
+
         const newUrl = new URL(window.location);
-        newUrl.searchParams.set('episode', episodeNumber);
+        // 删除可能存在的 ep/url 参数
+        newUrl.searchParams.delete('ep');
+        newUrl.searchParams.delete('url');
+        // 根据原始URL使用的是 id 还是 anime 来决定如何更新
+        if (animeTitleParam) {
+            newUrl.searchParams.set('episode', episodeNumber);
+        } else if (animeId) {
+            newUrl.searchParams.set('ep', episodeNumber);
+        } else {
+            newUrl.searchParams.set('episode', episodeNumber);
+        }
         window.history.replaceState({}, '', newUrl);
+
+        // 如果有URL且有播放器，切换视频
+        if (episodeUrl && muiPlayer) {
+            const video = muiPlayer.video();
+            if (video) {
+                video.src = episodeUrl;
+                video.play();
+            }
+
+            // 更新播放器标题和UI
+            const currentTitleEl = document.getElementById('page-title');
+            if (currentTitleEl) {
+                const animeTitle = currentTitleEl.textContent;
+                const playerTitle = `${animeTitle} 第${episodeNumber}集`;
+                muiPlayer.config.title = playerTitle;
+                updatePlayerUI(playerTitle);
+            }
+        }
     }
 
     // 播放其他动漫
@@ -1170,19 +1572,32 @@
 
     // 更新当前剧集信息
     function updateCurrentEpisodeInfo() {
-        const episodeTitle = document.querySelector('.current-episode');
+        const episodeTitle = document.getElementById('page-episode');
         if (episodeTitle) {
-            episodeTitle.textContent = `第${currentEpisode}集 · ${getEpisodeTitle(currentEpisode)} · 24分30秒`;
+            episodeTitle.textContent = `第${currentEpisode}集 · 播放中`;
         }
 
-        const pageTitle = document.querySelector('title');
-        if (pageTitle) {
-            pageTitle.textContent = `播放中 - 海贼王第${currentEpisode}集 - 哈哈动漫网`;
+        // 更新面包屑中的集数
+        const breadcrumbEpisode = document.getElementById('breadcrumb-episode');
+        if (breadcrumbEpisode) {
+            breadcrumbEpisode.textContent = `第${currentEpisode}集 播放中`;
+        }
+
+        // 从URL获取动漫标题（如果已加载）
+        const currentTitleEl = document.getElementById('page-title');
+        if (currentTitleEl && currentTitleEl.textContent && currentTitleEl.textContent !== '加载中...') {
+            // 如果已经从API加载了动漫信息，不修改标题
+            document.title = `播放中 - ${currentTitleEl.textContent}第${currentEpisode}集 - 哈哈动漫网`;
         }
     }
 
     // 高亮当前剧集
     function highlightCurrentEpisode() {
+        // 如果没有剧集数据，不执行
+        if (!episodes || episodes.length === 0) {
+            return;
+        }
+
         document.querySelectorAll('.episode-item').forEach(item => {
             item.classList.remove('current');
         });
@@ -1238,7 +1653,21 @@
     function playPrevEpisode() {
         const prevEpisode = currentEpisode - 1;
         if (prevEpisode >= 1) {
-            playEpisode(prevEpisode);
+            // 检查是否还有上一集（从剧集列表中查找）
+            const episodeItems = document.querySelectorAll('.episode-item');
+            let hasPrevEpisode = false;
+            episodeItems.forEach(item => {
+                const numberText = item.querySelector('.episode-number')?.textContent;
+                if (numberText === `第${prevEpisode}集`) {
+                    hasPrevEpisode = true;
+                }
+            });
+
+            if (hasPrevEpisode) {
+                playEpisode(prevEpisode);
+            } else {
+                showToast('已经是第一集了');
+            }
         } else {
             showToast('已经是第一集了');
         }
@@ -1247,8 +1676,17 @@
     // 播放下一集
     function playNextEpisode() {
         const nextEpisode = currentEpisode + 1;
-        // 假设总共有1100集
-        if (nextEpisode <= 1100) {
+        // 检查是否还有下一集（从剧集列表中查找）
+        const episodeItems = document.querySelectorAll('.episode-item');
+        let hasNextEpisode = false;
+        episodeItems.forEach(item => {
+            const numberText = item.querySelector('.episode-number')?.textContent;
+            if (numberText === `第${nextEpisode}集`) {
+                hasNextEpisode = true;
+            }
+        });
+
+        if (hasNextEpisode) {
             playEpisode(nextEpisode);
         } else {
             showToast('已经是最新一集了');
